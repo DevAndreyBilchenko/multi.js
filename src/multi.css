@@ -15,6 +15,10 @@
     width: 50%;
 }
 
+.multi-wrapper .non-selected-wrapper-primary {
+    width: 100%;
+}
+
 .multi-wrapper .non-selected-wrapper {
     background: #fafafa;
     border-right: 1px solid #ccc;

@@ -77,7 +77,7 @@ var multi = (function() {
   // Refreshes an already constructed multi.js instance
   var refresh_select = function(select, settings) {
     // Clear columns
-    select.wrapper.selected.innerHTML = "";
+    if (settings.selected_outer) select.wrapper.selected.innerHTML = "";
     select.wrapper.non_selected.innerHTML = "";
 
     // Add headers to columns
@@ -92,7 +92,7 @@ var multi = (function() {
       selected_header.innerText = settings.selected_header;
 
       select.wrapper.non_selected.appendChild(non_selected_header);
-      select.wrapper.selected.appendChild(selected_header);
+      if (settings.selected_outer) select.wrapper.selected.appendChild(selected_header);
     }
 
     // Get search value
@@ -127,7 +127,7 @@ var multi = (function() {
       if (option.selected) {
         row.className += " selected";
         var clone = row.cloneNode(true);
-        select.wrapper.selected.appendChild(clone);
+        if (settings.selected_outer) select.wrapper.selected.appendChild(clone);
       }
 
       // Create group if entering a new optgroup
@@ -219,6 +219,10 @@ var multi = (function() {
       typeof settings["hide_empty_groups"] !== "undefined"
         ? settings["hide_empty_groups"]
         : false;
+    settings["selected_outer"] =
+      typeof settings["selected_outer"] !== "undefined"
+        ? settings["selected_outer"]
+        : true;
 
     // Check if already initalized
     if (select.dataset.multijs != null) {
@@ -258,8 +262,14 @@ var multi = (function() {
     var non_selected = document.createElement("div");
     non_selected.className = "non-selected-wrapper";
 
-    var selected = document.createElement("div");
-    selected.className = "selected-wrapper";
+    if (settings.selected_outer === false) {
+        non_selected.className = non_selected.className + " " + "non-selected-wrapper-primary"
+    }
+
+    if (settings.selected_outer) {
+      var selected = document.createElement("div");
+      selected.className = "selected-wrapper";
+    }
 
     // Add click handler to toggle the selected status
     wrapper.addEventListener("click", function(event) {
@@ -281,10 +291,15 @@ var multi = (function() {
     });
 
     wrapper.appendChild(non_selected);
-    wrapper.appendChild(selected);
+
+    if (settings.selected_outer) {
+      wrapper.appendChild(selected);
+    }
 
     wrapper.non_selected = non_selected;
-    wrapper.selected = selected;
+    if (settings.selected_outer && settings.selected_outer) {
+      wrapper.selected = selected;
+    }
 
     select.wrapper = wrapper;
 
